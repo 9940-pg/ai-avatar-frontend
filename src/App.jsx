@@ -15,6 +15,10 @@ function App() {
   const recognitionRef = useRef(null);
   const silenceTimerRef = useRef(null);
 
+  // ✅ API URL FIX (CRA compatible)
+  const API_URL =
+    process.env.REACT_APP_API_URL || "http://localhost:5000";
+
   // ---------------- VOICES ----------------
   useEffect(() => {
     const loadVoices = () => {
@@ -32,6 +36,13 @@ function App() {
       voices.find(v => v.lang === "en-US")
     );
   };
+
+  // ---------------- 🔥 BACKEND WARMUP ----------------
+  useEffect(() => {
+    fetch(`${API_URL}`)
+      .then(() => console.log("Backend ready"))
+      .catch(() => console.log("Backend waking..."));
+  }, [API_URL]);
 
   // ---------------- SPEAK ----------------
   const speak = (text) => {
@@ -157,14 +168,14 @@ function App() {
   const handleBotResponse = (reply) => {
     if (!reply) return;
 
-    // TEXT RESPONSE
+    // TEXT
     if (typeof reply === "string") {
       setChat(prev => [...prev, { bot: "" }]);
       typeMessage(reply);
       return;
     }
 
-    // OBJECT RESPONSE (CARDS)
+    // CARDS
     if (typeof reply === "object") {
       setChat(prev => [...prev, { bot: reply }]);
 
@@ -177,7 +188,7 @@ function App() {
   // ---------------- SEND MESSAGE ----------------
   const sendMessage = async (text) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/ask`, {
+      const res = await fetch(`${API_URL}/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -185,16 +196,25 @@ function App() {
         body: JSON.stringify({ message: text })
       });
 
+      // ❗ handle backend failure
+      if (!res.ok) {
+        throw new Error("Server error");
+      }
+
       const data = await res.json();
       handleBotResponse(data.reply);
 
     } catch (err) {
-      handleBotResponse("Something went wrong. Please try again.");
+      console.error("API ERROR:", err);
+
+      handleBotResponse(
+        "Server is waking up or something went wrong. Try again in a moment."
+      );
     }
   };
 
   // ---------------- TEXT INPUT ----------------
-  const sendTextMessage = async () => {
+  const sendTextMessage = () => {
     if (!message) return;
 
     setChat(prev => [...prev, { user: message }]);
