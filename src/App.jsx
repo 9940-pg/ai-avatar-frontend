@@ -4,6 +4,7 @@ import ChatPanel from "./components/ChatPanel";
 import { FaMicrophone } from "react-icons/fa";
 
 function App() {
+  console.log("API:", process.env.REACT_APP_API_URL);
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
   const [isTalking, setIsTalking] = useState(false);
