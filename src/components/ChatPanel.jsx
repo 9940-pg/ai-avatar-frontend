@@ -121,7 +121,6 @@ useEffect(() => {
       {isTyping && (
         <div className="text-xs opacity-60">
           Avatar is typing...
-            Avatar is typing...
         </div>
         
       )}
