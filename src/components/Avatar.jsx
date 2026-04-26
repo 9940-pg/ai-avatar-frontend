@@ -4,15 +4,20 @@ import avatarImage from "../assets/avatar.png";
 
 function Avatar({ isTalking, isListening }) {
   return (
-    <div className="text-center mb-6 animate-[float_4s_ease-in-out_infinite]">
+    <div className="text-center mb-4 animate-[float_4s_ease-in-out_infinite]">
 
       <div
         className={`
-          relative w-[270px] h-[270px] mx-auto rounded-full overflow-hidden
-          border-4 transition-all duration-300
+          relative 
+          w-[240px] h-[240px]      /* 📱 mobile big */
+          sm:w-[220px] sm:h-[220px]
+          md:w-[190px] md:h-[190px] /* 💻 smaller desktop */
+          mx-auto rounded-full overflow-hidden
+          border transition-all duration-300
+          backdrop-blur-md
           ${isTalking
-            ? "border-primary scale-105 shadow-[0_0_60px_rgba(59,130,246,0.8)]"
-            : "border-borderSoft"}
+            ? "border-primary scale-105 shadow-[0_0_40px_rgba(59,130,246,0.5)]"
+            : "border-white/10"}
         `}
       >
 
@@ -43,7 +48,7 @@ function Avatar({ isTalking, isListening }) {
 
       </div>
 
-      <p className="font-semibold mt-3 text-textSecondary">
+      <p className="text-sm font-medium mt-2 text-textSecondary">
         {isTalking
           ? "Speaking..."
           : isListening

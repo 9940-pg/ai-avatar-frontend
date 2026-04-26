@@ -3,8 +3,7 @@ import Avatar from "./components/Avatar";
 import ChatPanel from "./components/ChatPanel";
 import { FaMicrophone } from "react-icons/fa";
 
-function App() {
-  console.log("API:", process.env.REACT_APP_API_URL);
+const App = () => {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
   const [isTalking, setIsTalking] = useState(false);
@@ -14,11 +13,14 @@ function App() {
   const [started, setStarted] = useState(false);
 
   const recognitionRef = useRef(null);
-  const silenceTimerRef = useRef(null);
 
-  // ✅ API URL FIX (CRA compatible)
   const API_URL =
     process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  const isVoiceSupported = !!SpeechRecognition;
 
   // ---------------- VOICES ----------------
   useEffect(() => {
@@ -38,19 +40,11 @@ function App() {
     );
   };
 
-  // ---------------- 🔥 BACKEND WARMUP ----------------
-  useEffect(() => {
-    fetch(`${API_URL}`)
-      .then(() => console.log("Backend ready"))
-      .catch(() => console.log("Backend waking..."));
-  }, [API_URL]);
-
   // ---------------- SPEAK ----------------
   const speak = (text) => {
     if (!text) return;
 
     if (recognitionRef.current) {
-      recognitionRef.current.onend = null;
       recognitionRef.current.stop();
     }
 
@@ -58,14 +52,13 @@ function App() {
     const voice = getFemaleVoice();
     if (voice) speech.voice = voice;
 
-    speech.pitch = 1.3;
-    speech.rate = 1.1;
+    speech.pitch = 1.2;
+    speech.rate = 1.05;
 
     setIsTalking(true);
 
     speech.onend = () => {
       setIsTalking(false);
-      startListening();
     };
 
     speechSynthesis.cancel();
@@ -74,6 +67,11 @@ function App() {
 
   // ---------------- LISTEN ----------------
   const startListening = async () => {
+    if (!isVoiceSupported) {
+      alert("Voice not supported on this device");
+      return;
+    }
+
     if (isTalking) return;
 
     try {
@@ -83,16 +81,7 @@ function App() {
       return;
     }
 
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      alert("Use Chrome");
-      return;
-    }
-
     if (recognitionRef.current) {
-      recognitionRef.current.onend = null;
       recognitionRef.current.stop();
     }
 
@@ -108,34 +97,19 @@ function App() {
     recognition.onresult = (event) => {
       const text = event.results[0][0].transcript;
 
-      clearTimeout(silenceTimerRef.current);
-
       setChat(prev => [...prev, { user: text }]);
       sendMessage(text);
     };
 
-    recognition.onerror = () => {
-      setIsListening(false);
-      setTimeout(() => startListening(), 1500);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      if (!isTalking && started) {
-        setTimeout(() => startListening(), 1200);
-      }
-    };
-
-    silenceTimerRef.current = setTimeout(() => {
-      if (!isTalking) recognition.stop();
-    }, 5000);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
 
     try {
       recognition.start();
     } catch {}
   };
 
-  // ---------------- TYPING EFFECT ----------------
+  // ---------------- TYPING ----------------
   const typeMessage = (text) => {
     let index = 0;
     let current = "";
@@ -165,56 +139,41 @@ function App() {
     }, 18);
   };
 
-  // ---------------- HANDLE BOT RESPONSE ----------------
+  // ---------------- RESPONSE ----------------
   const handleBotResponse = (reply) => {
     if (!reply) return;
 
-    // TEXT
     if (typeof reply === "string") {
       setChat(prev => [...prev, { bot: "" }]);
       typeMessage(reply);
       return;
     }
 
-    // CARDS
     if (typeof reply === "object") {
       setChat(prev => [...prev, { bot: reply }]);
-
-      if (reply.message) {
-        speak(reply.message);
-      }
+      if (reply.message) speak(reply.message);
     }
   };
 
-  // ---------------- SEND MESSAGE ----------------
+  // ---------------- SEND ----------------
   const sendMessage = async (text) => {
     try {
       const res = await fetch(`${API_URL}/ask`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
       });
 
-      // ❗ handle backend failure
-      if (!res.ok) {
-        throw new Error("Server error");
-      }
+      if (!res.ok) throw new Error("Server error");
 
       const data = await res.json();
       handleBotResponse(data.reply);
 
-    } catch (err) {
-      console.error("API ERROR:", err);
-
-      handleBotResponse(
-        "Server is waking up or something went wrong. Try again in a moment."
-      );
+    } catch {
+      handleBotResponse("Server is waking up. Try again.");
     }
   };
 
-  // ---------------- TEXT INPUT ----------------
   const sendTextMessage = () => {
     if (!message) return;
 
@@ -230,21 +189,17 @@ function App() {
     setStarted(true);
 
     const intro =
-      "Hey, I am Priyanka. I am a full stack developer. You can ask me about my projects, skills, or experience.";
+      "Hey, I am Priyanka. I am a full stack developer.";
 
     setChat(prev => [...prev, { bot: "" }]);
     typeMessage(intro);
-
-    setTimeout(() => {
-      startListening();
-    }, 4000);
   };
 
-  // ---------------- UI ----------------
   return (
-    <div className="min-h-screen flex flex-col items-center p-6 bg-background text-textPrimary">
+    <div className="min-h-screen flex flex-col items-center px-4 py-4 bg-background text-textPrimary">
 
-      <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-primary to-accentLight bg-clip-text text-transparent">
+      {/* 🔹 Smaller heading */}
+      <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4 text-center">
         AI Avatar Assistant
       </h2>
 
@@ -253,9 +208,9 @@ function App() {
       {!started && (
         <button
           onClick={handleStart}
-          className="mt-6 w-16 h-16 flex items-center justify-center rounded-full bg-primary text-white shadow-lg transition hover:scale-110 active:scale-95"
+          className="mt-6 w-12 h-12 flex items-center justify-center rounded-full bg-primary text-white shadow-md hover:scale-105 transition"
         >
-          <FaMicrophone size={22} />
+          <FaMicrophone size={18} />
         </button>
       )}
 
@@ -263,18 +218,41 @@ function App() {
         <>
           <ChatPanel chat={chat} isTyping={isTyping} />
 
-          <div className="flex w-full max-w-2xl mt-4 gap-2 p-2 rounded-2xl backdrop-blur-lg bg-glass border border-borderSoft">
+          {/* 🔥 MATCHED WIDTH + SOFT BORDER */}
+          <div className="
+            flex 
+            w-full 
+            max-w-md md:max-w-lg   /* 👈 reduced width */
+            mt-4 
+            gap-2 
+            p-2 
+            rounded-2xl 
+            bg-white/5 
+            border border-white/10   /* 👈 soft border */
+            backdrop-blur-md
+          ">
 
             <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="(Optional) Type..."
-              className="flex-1 p-3 rounded-xl bg-transparent border border-borderSoft outline-none text-textPrimary"
+              placeholder="Type..."
+              className="flex-1 p-2 rounded-xl bg-transparent border border-white/10 outline-none text-sm"
             />
+
+            {isVoiceSupported && (
+              <button
+                onClick={startListening}
+                className={`px-3 rounded-xl bg-primary text-white ${
+                  isListening ? "animate-pulse" : ""
+                }`}
+              >
+                <FaMicrophone size={16} />
+              </button>
+            )}
 
             <button
               onClick={sendTextMessage}
-              className="px-6 rounded-xl font-semibold bg-primary hover:bg-primaryDark text-white transition"
+              className="px-3 rounded-xl bg-primary text-white text-sm"
             >
               Send
             </button>
@@ -284,6 +262,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;
