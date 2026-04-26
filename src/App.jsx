@@ -21,6 +21,7 @@ const App = () => {
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
   const isVoiceSupported = !!SpeechRecognition;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   // ---------------- VOICES ----------------
   useEffect(() => {
@@ -66,48 +67,47 @@ const App = () => {
   };
 
   // ---------------- LISTEN ----------------
-  const startListening = async () => {
-    if (!isVoiceSupported) {
-      alert("Voice not supported on this device");
-      return;
-    }
+const startListening = async () => {
+  if (!isVoiceSupported || isMobile) {
+    alert("Voice input is not supported on your device. Please type instead.");
+    return;
+  }
 
-    if (isTalking) return;
+  if (isTalking) return;
 
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch {
-      alert("Please allow microphone access");
-      return;
-    }
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch {
+    alert("Please allow microphone access");
+    return;
+  }
 
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
+  if (recognitionRef.current) {
+    recognitionRef.current.stop();
+  }
 
-    const recognition = new SpeechRecognition();
-    recognitionRef.current = recognition;
+  const recognition = new SpeechRecognition();
+  recognitionRef.current = recognition;
 
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
+  recognition.lang = "en-US";
+  recognition.continuous = false;
+  recognition.interimResults = false;
 
-    recognition.onstart = () => setIsListening(true);
+  recognition.onstart = () => setIsListening(true);
 
-    recognition.onresult = (event) => {
-      const text = event.results[0][0].transcript;
-
-      setChat(prev => [...prev, { user: text }]);
-      sendMessage(text);
-    };
-
-    recognition.onend = () => setIsListening(false);
-    recognition.onerror = () => setIsListening(false);
-
-    try {
-      recognition.start();
-    } catch {}
+  recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+    setChat(prev => [...prev, { user: text }]);
+    sendMessage(text);
   };
+
+  recognition.onend = () => setIsListening(false);
+  recognition.onerror = () => setIsListening(false);
+
+  try {
+    recognition.start();
+  } catch {}
+};
 
   // ---------------- TYPING ----------------
   const typeMessage = (text) => {
@@ -219,43 +219,73 @@ const App = () => {
           <ChatPanel chat={chat} isTyping={isTyping} />
 
           {/* 🔥 MATCHED WIDTH + SOFT BORDER */}
-          <div className="
-            flex 
-            w-full 
-            max-w-md md:max-w-lg   /* 👈 reduced width */
-            mt-4 
-            gap-2 
-            p-2 
-            rounded-2xl 
-            bg-white/5 
-            border border-white/10   /* 👈 soft border */
-            backdrop-blur-md
-          ">
+         <div
+  className="
+    flex 
+    w-full 
+    max-w-md md:max-w-lg
+    mt-4 
+    gap-2 
+    p-2 
+    rounded-2xl 
+    bg-white/5 
+    border border-white/10
+    backdrop-blur-md
 
-            <input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type..."
-              className="flex-1 p-2 rounded-xl bg-transparent border border-white/10 outline-none text-sm"
-            />
+    items-center        /* ✅ vertical alignment */
+    overflow-hidden     /* ✅ prevents child overflow */
+  "
+>
 
-            {isVoiceSupported && (
-              <button
-                onClick={startListening}
-                className={`px-3 rounded-xl bg-primary text-white ${
-                  isListening ? "animate-pulse" : ""
-                }`}
-              >
-                <FaMicrophone size={16} />
-              </button>
-            )}
+           <input
+  value={message}
+  onChange={(e) => setMessage(e.target.value)}
+  placeholder="Type..."
+  className="
+    flex-1 
+    min-w-0          /* 🔥 MOST IMPORTANT FIX */
+    p-2 
+    rounded-xl 
+    bg-transparent 
+    border border-white/10 
+    outline-none 
+    text-sm
+  "
+/>
 
-            <button
-              onClick={sendTextMessage}
-              className="px-3 rounded-xl bg-primary text-white text-sm"
-            >
-              Send
-            </button>
+  {isVoiceSupported && (
+  <button
+    onClick={startListening}
+    className={`
+      shrink-0
+      w-10 h-10              /* 🔥 equal width & height */
+      rounded-full          /* 🔥 makes it perfectly round */
+      bg-primary 
+      text-white 
+      flex items-center justify-center
+      ${isListening ? "animate-pulse" : ""}
+    `}
+  >
+    <FaMicrophone size={16} />
+  </button>
+)}
+
+<button
+  onClick={sendTextMessage}
+  className="
+    shrink-0
+    px-3 
+    py-2
+    rounded-xl 
+    bg-primary 
+    text-white 
+    text-sm 
+    whitespace-nowrap
+    flex items-center justify-center   /* ✅ ADD THIS */
+  "
+>
+  Send
+</button>
 
           </div>
         </>
