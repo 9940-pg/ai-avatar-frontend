@@ -9,22 +9,21 @@ const ChatPanel = ({ chat, isTyping }) => {
     const el = containerRef.current;
     if (!el) return;
 
-    const threshold = 120; // 🔥 increased for better UX
+    const threshold = 120;
     const atBottom =
       el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
 
     setIsAtBottom(atBottom);
   };
 
-  // 🔥 Improved auto-scroll
-useEffect(() => {
-  if (isAtBottom) {
-    bottomRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "end"
-    });
-  }
-}, [chat, isTyping, isAtBottom]); // ✅ fixed
+  useEffect(() => {
+    if (isAtBottom) {
+      bottomRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end"
+      });
+    }
+  }, [chat, isTyping, isAtBottom]);
 
   return (
     <div
@@ -65,7 +64,7 @@ useEffect(() => {
                 {/* TEXT */}
                 {typeof c.bot === "string" && c.bot}
 
-                {/* OBJECT */}
+                {/* OBJECT (PROJECT CARDS) */}
                 {typeof c.bot === "object" && (
                   <>
                     {c.bot.message && (
@@ -79,22 +78,29 @@ useEffect(() => {
                             key={index}
                             className="p-3 rounded-xl bg-white/5 border border-white/10"
                           >
+                            {/* IMAGE */}
                             {proj.image && (
                               <img
                                 src={proj.image}
                                 alt={proj.title}
+                                onError={(e) => {
+                                  e.target.src = "/images/fallback.png";
+                                }}
                                 className="w-full h-28 object-cover rounded-lg mb-2"
                               />
                             )}
 
+                            {/* TITLE */}
                             <h3 className="font-semibold text-base">
                               {proj.title}
                             </h3>
 
+                            {/* DESCRIPTION */}
                             <p className="text-xs opacity-80">
                               {proj.description}
                             </p>
 
+                            {/* TECH */}
                             <div className="flex flex-wrap gap-1 mt-2">
                               {proj.tech?.map((t, idx) => (
                                 <span
@@ -105,6 +111,51 @@ useEffect(() => {
                                 </span>
                               ))}
                             </div>
+
+                            {/* LINKS */}
+                            {(proj.link || proj.github) && (
+                              <div className="flex gap-2 mt-3 flex-wrap">
+
+                                {proj.link && (
+                                  <a
+                                    href={proj.link}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="
+                                      text-[11px] 
+                                      px-2 py-1 
+                                      rounded 
+                                      bg-blue-500/20 
+                                      text-blue-400 
+                                      hover:bg-blue-500/30 
+                                      transition
+                                    "
+                                  >
+                                    Live
+                                  </a>
+                                )}
+
+                                {proj.github && (
+                                  <a
+                                    href={proj.github}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="
+                                      text-[11px] 
+                                      px-2 py-1 
+                                      rounded 
+                                      bg-green-500/20 
+                                      text-green-400 
+                                      hover:bg-green-500/30 
+                                      transition
+                                    "
+                                  >
+                                     Code
+                                  </a>
+                                )}
+
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -122,7 +173,6 @@ useEffect(() => {
         <div className="text-xs opacity-60">
           Avatar is typing...
         </div>
-        
       )}
 
       {/* Scroll anchor */}
