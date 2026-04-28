@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+# 🎭 AI Avatar Portfolio Assistant (Frontend)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An interactive **AI-powered portfolio UI** that presents a developer through a talking avatar, chat interface, and dynamic project cards.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Live Demo
 
-### `npm start`
+👉 https://ai-avatar-frontend-jdrnip2jn-priyankas-projects-a6a1fab7.vercel.app/
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ✨ Features
 
-### `npm test`
+* 🎭 Animated Avatar with speaking interaction
+* 💬 Chat-based UI
+* 🎤 Voice input (Speech Recognition)
+* 🔊 Text-to-Speech responses
+* ⌨️ Typing animation
+* 📱 Fully responsive design
+* 🧠 Dynamic rendering of project cards
+* 🔗 Live & GitHub links inside cards
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🧠 How It Works
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. User sends message (text/voice)
+2. Request goes to backend API
+3. Response comes as:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   * Text → displayed in chat
+   * Object → rendered as UI cards
+4. Avatar speaks response using TTS
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🛠️ Tech Stack
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+* React.js
+* Tailwind CSS
+* JavaScript
+* Web Speech API
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📂 Project Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+src/
+ ├── components/
+ │    ├── Avatar.jsx
+ │    ├── ChatPanel.jsx
+ │
+ ├── App.jsx
+ ├── index.js
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## ⚙️ Setup Instructions
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 1️⃣ Clone repo
 
-### Code Splitting
+```bash
+git clone https://github.com/9940-pg/ai-avatar-frontend.git
+cd ai-avatar-frontend
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 2️⃣ Install dependencies
 
-### Analyzing the Bundle Size
+```bash
+npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 3️⃣ Run project
 
-### Making a Progressive Web App
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## 🔌 Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Create `.env` file:
 
-### Deployment
+```env
+REACT_APP_API_URL=http://localhost:5000
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## ⚠️ Notes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* Voice input may not work on some mobile browsers
+* Requires backend running for full functionality
+
+---
+
+## 🔮 Future Improvements
+
+* Resume → Portfolio generator
+* AI-based responses
+* Better avatar animations
+* User personalization
+
+---
+
+## 👩‍💻 Author
+
+Priyanka
+Frontend Developer 🚀
+
+---
+
+## ⭐ Support
+
+Give a ⭐ if you like this project!
