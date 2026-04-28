@@ -1,41 +1,41 @@
-# 🎭 AI Avatar Portfolio Assistant (Frontend)
+# AI Avatar Portfolio Assistant (Frontend)
 
-An interactive **AI-powered portfolio UI** that presents a developer through a talking avatar, chat interface, and dynamic project cards.
-
----
-
-## 🚀 Live Demo
-
-👉 https://ai-avatar-frontend-jdrnip2jn-priyankas-projects-a6a1fab7.vercel.app/
+An interactive portfolio web application that presents a developer through a conversational interface, voice-enabled avatar, and dynamic project rendering.
 
 ---
 
-## ✨ Features
+## Live Demo
 
-* 🎭 Animated Avatar with speaking interaction
-* 💬 Chat-based UI
-* 🎤 Voice input (Speech Recognition)
-* 🔊 Text-to-Speech responses
-* ⌨️ Typing animation
-* 📱 Fully responsive design
-* 🧠 Dynamic rendering of project cards
-* 🔗 Live & GitHub links inside cards
+https://ai-avatar-frontend-jdrnip2jn-priyankas-projects-a6a1fab7.vercel.app/
 
 ---
 
-## 🧠 How It Works
+## Features
 
-1. User sends message (text/voice)
-2. Request goes to backend API
-3. Response comes as:
-
-   * Text → displayed in chat
-   * Object → rendered as UI cards
-4. Avatar speaks response using TTS
+* Conversational chat-based interface
+* Avatar with text-to-speech responses
+* Voice input using Web Speech API
+* Typing animation for responses
+* Dynamic rendering of project cards
+* Responsive design across devices
+* Integration with backend API
 
 ---
 
-## 🛠️ Tech Stack
+## How It Works
+
+1. User sends a message via text or voice
+2. Request is sent to the backend API
+3. Backend returns either:
+
+   * A text response
+   * A structured object (e.g., project data)
+4. Frontend renders the response accordingly
+5. Avatar speaks the response using text-to-speech
+
+---
+
+## Tech Stack
 
 * React.js
 * Tailwind CSS
@@ -44,7 +44,7 @@ An interactive **AI-powered portfolio UI** that presents a developer through a t
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```bash
 src/
@@ -58,22 +58,22 @@ src/
 
 ---
 
-## ⚙️ Setup Instructions
+## Setup Instructions
 
-### 1️⃣ Clone repo
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/9940-pg/ai-avatar-frontend.git
 cd ai-avatar-frontend
 ```
 
-### 2️⃣ Install dependencies
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3️⃣ Run project
+### 3. Run the application
 
 ```bash
 npm start
@@ -81,9 +81,9 @@ npm start
 
 ---
 
-## 🔌 Environment Variables
+## Environment Variables
 
-Create `.env` file:
+Create a `.env` file:
 
 ```env
 REACT_APP_API_URL=http://localhost:5000
@@ -91,29 +91,29 @@ REACT_APP_API_URL=http://localhost:5000
 
 ---
 
-## ⚠️ Notes
+## Notes
 
-* Voice input may not work on some mobile browsers
-* Requires backend running for full functionality
+* Voice input may not function on all mobile browsers
+* Backend service must be running for full functionality
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
-* Resume → Portfolio generator
-* AI-based responses
-* Better avatar animations
+* Resume-to-portfolio generation
+* AI-based response handling
+* Enhanced avatar animations
 * User personalization
 
 ---
 
-## 👩‍💻 Author
+## Author
 
 Priyanka
-Frontend Developer 🚀
+Full Stack Developer
 
 ---
 
-## ⭐ Support
+## License
 
-Give a ⭐ if you like this project!
+This project is open-source and available for use under standard terms.
